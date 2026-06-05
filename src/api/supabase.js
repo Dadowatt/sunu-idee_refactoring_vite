@@ -38,3 +38,26 @@ export async function ajouterIdeeSupabase(idee) {
 
   return data;
 }
+
+/********************************************************
+ * UPDATE - modifier une idée
+ *******************************************************/
+export async function updateIdeeSupabase(id, updates) {
+  try {
+    const { data, error } = await supabaseClient
+      .from("idees")
+      .update(updates)
+      .eq("id", id)
+      .select();
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Erreur UPDATE Supabase :", error);
+    return null;
+  }
+}
+
