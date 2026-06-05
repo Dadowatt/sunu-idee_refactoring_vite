@@ -9,34 +9,38 @@ export const supabaseClient = createClient(supabaseUrl, supabaseKey);
  * READ - charger toutes les idées
  **************************************/
 export async function chargerIdeesSupabase() {
-  const { data, error } = await supabaseClient
-    .from("idees")
-    .select("*")
-    .order("date", { ascending: false })
+  try {
+    const { data, error } = await supabaseClient
+      .from("idees")
+      .select("*")
+      .order("date", { ascending: false });
 
-  if (error) {
-    console.error(error);
+    if (error) throw error;
+
+    return data;
+  } catch (error) {
+    console.error("Erreur READ Supabase :", error);
     return [];
   }
-
-  return data;
 }
 
 /******************************************************
  * CREATE - ajouter une idée
  ******************************************************/
 export async function ajouterIdeeSupabase(idee) {
-  const { data, error } = await supabaseClient
-    .from("idees")
-    .insert([idee])
-    .select();
+  try {
+    const { data, error } = await supabaseClient
+      .from("idees")
+      .insert([idee])
+      .select();
 
-  if (error) {
+    if (error) throw error;
+
+    return data;
+  } catch (error) {
     console.error("Erreur INSERT Supabase :", error);
     return null;
   }
-
-  return data;
 }
 
 /********************************************************
@@ -61,3 +65,23 @@ export async function updateIdeeSupabase(id, updates) {
   }
 }
 
+/********************************************************
+ * DELETE - supprimer une idée
+ *******************************************************/
+
+export async function supprimerIdeeSupabase(id) {
+    try{
+        const { error } = await supabaseClient
+        .from("idees")
+        .delete()
+        .eq("id", id);
+
+        if(error){
+            throw error;
+        }
+        return true;
+    }catch(error){
+        console.error("Erreur DELETE Supabase :", error);
+        return false;
+    }
+}

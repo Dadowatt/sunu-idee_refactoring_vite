@@ -1,14 +1,39 @@
-import { ajouterIdeeSupabase } from "./api/supabase.js";
+import { appelerOpenRouter } from "./api/openrouter.js";
 
-const nouvelleIdee = {
-  titre: "Test Vite",
-  description: "Création depuis module",
-  categorie: "technique",
-  likes: 0,
-  liked: false,
-  archive: false,
-  date: new Date().toISOString(),
-};
 
-const result = await ajouterIdeeSupabase(nouvelleIdee);
-console.log("INSERT RESULT :", result);
+async function detecterCategorieIA(titre, description) {
+  const prompt = `
+Tu es un système de classification.
+
+Tu dois choisir UNE seule catégorie parmi :
+
+pedagogie
+campus
+technique
+evenement
+
+Règles :
+- cours, enseignants, examens => pedagogie
+- vie étudiante => campus
+- application, site web => technique
+- conférence, atelier => evenement
+
+Réponds uniquement par un mot.
+
+Titre: ${titre}
+Description: ${description}
+`;
+
+  const result = await appelerOpenRouter(prompt);
+
+  const categoriesValides = [
+    "pedagogie",
+    "campus",
+    "technique",
+    "evenement"
+  ];
+
+  return categoriesValides.includes(result)
+    ? result
+    : "technique";
+}
