@@ -1,4 +1,14 @@
-import { chargerIdeesSupabase } from "./api/supabase.js";
+import { ajouterIdeeSupabase } from "./api/supabase.js";
 
-const data = await chargerIdeesSupabase();
-console.log("IDEES SUPABASE :", data);
+const nouvelleIdee = {
+  titre: "Test Vite",
+  description: "Création depuis module",
+  categorie: "technique",
+  likes: 0,
+  liked: false,
+  archive: false,
+  date: new Date().toISOString(),
+};
+
+const result = await ajouterIdeeSupabase(nouvelleIdee);
+console.log("INSERT RESULT :", result);
