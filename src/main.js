@@ -1,4 +1,4 @@
-import { chargerIdeesSupabase, ajouterIdeeSupabase, updateIdeeSupabase, supprimerIdeeSupabase } from "./api/supabase.js";
+import { chargerIdeesSupabase, ajouterIdeeSupabase, updateIdeeSupabase, supprimerIdeeSupabase } from "./services/supabase.js";
 import { appelerOpenRouter } from "./services/openrouter.js";
 /*************************************************
  * 2. STATE
@@ -106,33 +106,29 @@ formIdees.addEventListener("submit", async (e) => {
   let categorie;
 
   try {
-    /*************************************************
-     * MODE ÉDITION
-     *************************************************/
-    if (modeEdition) {
-      categorie = categorieInput.value;
-    }
+    const categorieChoisie = categorieInput.value;
 
-    /*************************************************
-     * MODE CRÉATION (IA)
-     *************************************************/
-    else {
+    if (modeEdition || categorieChoisie) {
+      categorie = categorieChoisie;
+    } else {
       btnSubmit.disabled = true;
       btnSubmit.textContent = "Analyse IA en cours...";
-      categorie = await detecterCategorieIA(titre, description);
+
+      categorie = await detecterCategorieIA(
+        titre,
+        description
+      );
     }
   } catch (error) {
     console.error("Erreur IA :", error);
-    categorie = "campus";
+    categorie = "campus"; // fallback obligatoire
   } finally {
-    if (!modeEdition) {
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = "Soumettre l'idée";
-    }
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = "Soumettre l'idée";
   }
 
   /*************************************************
-   * CRÉATION
+   * MODE CRÉATION
    *************************************************/
   if (!modeEdition) {
     const nouvelleIdee = {
@@ -146,24 +142,19 @@ formIdees.addEventListener("submit", async (e) => {
     };
 
     try {
-      const inserted = await ajouterIdeeSupabase(
-        nouvelleIdee
-      );
+      const inserted = await ajouterIdeeSupabase(nouvelleIdee);
 
       if (inserted) {
         listeDesIdees = await chargerIdeesSupabase();
         afficherLeMur();
       }
     } catch (error) {
-      console.error(
-        "Erreur INSERT Supabase :",
-        error
-      );
+      console.error("Erreur INSERT Supabase :", error);
     }
   }
 
   /*************************************************
-   * ÉDITION
+   * MODE ÉDITION
    *************************************************/
   else {
     try {
@@ -183,14 +174,10 @@ formIdees.addEventListener("submit", async (e) => {
 
       modeEdition = false;
       idEnCoursEdition = null;
-
       desactiverModeEdition();
 
     } catch (error) {
-      console.error(
-        "Erreur UPDATE Supabase :",
-        error
-      );
+      console.error("Erreur UPDATE Supabase :", error);
     }
   }
 
@@ -522,7 +509,6 @@ Description: ${description}
 `;
 
   const result = await appelerOpenRouter(prompt);
-  console.log("IA RESULT:", result)
 
   return result;
 }
