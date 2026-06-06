@@ -251,8 +251,10 @@ function filtrerIdees() {
 // Fonction UI "empty state"
 function afficherMessageVide(message) {
   murDesIdees.innerHTML = `
-    <div class="col-span-full text-center text-slate-400 p-10">
-      ${message}
+    <div class="message-vide col-span-full bg-white border border-dashed border-slate-200 rounded-2xl p-10 text-center">
+      <p class="text-slate-400 text-sm">
+        ${message}
+      </p>
     </div>
   `;
 }
@@ -269,8 +271,10 @@ function afficherLeMur() {
   }
 
   if (ideesFiltrees.length === 0) {
-    afficherMessageVide("Aucune idée pour cette catégorie.");
-    return;
+  afficherMessageVide(
+    "Aucune idée à afficher pour cette catégorie."
+  );
+  return;
   }
 
   ideesFiltrees.forEach((idee) => {
