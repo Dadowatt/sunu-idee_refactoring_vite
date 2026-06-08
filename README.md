@@ -12,7 +12,7 @@ Une intelligence artificielle via OpenRouter permet la classification automatiqu
 
 ## Lien du projet
 
-https://sunu-idees-supabase.vercel.app/
+https://sunu-idees-vite.vercel.app/
 
 ---
 
