@@ -17,7 +17,6 @@ let modeEdition = false;
 let idEnCoursEdition = null;
 let categorieActive = "toutes";
 
-
 /*************************************************
  * 1. DOM
  *************************************************/
