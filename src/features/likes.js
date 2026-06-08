@@ -12,7 +12,6 @@ export async function likerIdee(id,listeDesIdees,updateCarte) {
 
   const result = await updateIdeeSupabase(id, {
     likes: newLikes,
-    liked: newLikedState,
   });
 
   if (!result) return;
